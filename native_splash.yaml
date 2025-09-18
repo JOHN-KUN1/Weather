@@ -1,0 +1,20 @@
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  # color: "#000000"
+
+  background_image: "assets/weather_background.jpg"
+  branding: "assets/text.png"
+  image: "assets/rain_boy.png"
+  branding_bottom_padding: 24
+
+  # color_dark: "#000000"
+  background_image_dark: "assets/weather_background.jpg"
+  branding_dark: "assets/text.png"
+  image_dark: "assets/rain_boy.png"
+
+  # android_12:
+  #   branding_dark: "assets/d.png"
+
