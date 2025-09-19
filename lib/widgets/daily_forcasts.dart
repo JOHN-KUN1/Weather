@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 
 class DailyForcasts extends StatelessWidget {
@@ -15,8 +17,8 @@ class DailyForcasts extends StatelessWidget {
       width: 80,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: const Color.fromARGB(255, 255, 255, 255),
-        boxShadow: [const BoxShadow(blurRadius: 0.0,spreadRadius: 0.2)],
+        color: weekday == DateFormat('EEE').format(DateTime.now()) ?  Colors.lightBlueAccent : Colors.white.withValues(alpha: 0.3),
+        boxShadow: weekday == DateFormat('EEE').format(DateTime.now()) ? [const BoxShadow(color: Colors.black54,blurRadius: 1,spreadRadius: 1)] : null,
       ),
       child: Center(
         child: Column(
@@ -27,13 +29,27 @@ class DailyForcasts extends StatelessWidget {
               temperature,
               style: const TextStyle(
                 color: Color.fromARGB(152, 255, 255, 255),
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: FontWeight.bold
               ),
             ),
             const SizedBox(height: 3,),
             Center(
-              child: Image.asset(forecastIcon,height: 40,width: 40,),
+              child: Image.network(
+                    'http:$forecastIcon',
+                    width: 50,
+                    height: 50,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Shimmer(child: Container(
+                        height: 64,
+                        width: 64,
+                        color: Colors.blueGrey,
+                      ));
+                    },
+                  ),
             ),
             const SizedBox(height: 3,),
             Text(
