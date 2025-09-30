@@ -74,10 +74,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Future<void> getUserLocationAndWeatherData() async {
+    print('----------------------------in here');
     Location location = Location();
     LocationData locationData;
-
-    List<geo.Placemark> placemarks;
 
     bool serviceEnabled;
     PermissionStatus permissionGranted;
@@ -89,6 +88,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         return;
       }
     }
+    print('------------------okay');
 
     permissionGranted = await location.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
@@ -97,23 +97,33 @@ class _WeatherScreenState extends State<WeatherScreen> {
         return;
       }
     }
+    print('-------------------gotten');
 
     locationData = await location.getLocation();
+
+    print('-------$locationData');
 
     if (locationData.latitude == null && locationData.longitude == null) {
       return;
     }
-
-    placemarks = await geo.placemarkFromCoordinates(
+    
+    try{ 
+      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
       locationData.latitude!,
       locationData.longitude!,
     );
     var city = placemarks[0].locality!;
-
     await getWeatherData(city);
+    }catch (e){
+      print('-----------${e.toString()}');
+    }
+    
+    // // print('----------------$city');
+
   }
 
   Future<void> getWeatherData(String userCity) async {
+    print('------------------------called');
     if (userCity.isEmpty) {
       return;
     }
@@ -124,6 +134,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     var response = await http.get(url);
 
     if (response.statusCode >= 400) {
+      print('--------------------failed');
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -134,6 +145,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ),
       );
     } else {
+      print('------------------------successsss');
       var responseBody = json.decode(response.body);
 
       setState(() {
@@ -168,29 +180,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
         _textController.clear();
 
-        // // data for next day 3
-        // var nextDay3Date = DateTime(int.tryParse(forecastDays[3]['date'].toString().split('-')[0])!, int.tryParse(forecastDays[3]['date'].toString().split('-')[1])!,int.tryParse(forecastDays[3]['date'].toString().split('-')[2])!);
-        // nextDay3 = DateFormat('EEE').format(nextDay3Date);
-        // nextDay3Icon = forecastDays[3]['day']['condition']['icon'].toString();
-        // nextDay3Temp = forecastDays[3]['day']['avgtemp_c'].toString();
-
-        // // data for next day 4
-        // var nextDay4Date = DateTime(int.tryParse(forecastDays[4]['date'].toString().split('-')[0])!, int.tryParse(forecastDays[4]['date'].toString().split('-')[1])!,int.tryParse(forecastDays[4]['date'].toString().split('-')[2])!);
-        // nextDay4 = DateFormat('EEE').format(nextDay4Date);
-        // nextDay4Icon = forecastDays[4]['day']['condition']['icon'].toString();
-        // nextDay4Temp = forecastDays[4]['day']['avgtemp_c'].toString();
-
-        // // data for next day 5
-        // var nextDay5Date = DateTime(int.tryParse(forecastDays[5]['date'].toString().split('-')[0])!, int.tryParse(forecastDays[5]['date'].toString().split('-')[1])!,int.tryParse(forecastDays[5]['date'].toString().split('-')[2])!);
-        // nextDay5 = DateFormat('EEE').format(nextDay5Date);
-        // nextDay5Icon = forecastDays[5]['day']['condition']['icon'].toString();
-        // nextDay5Temp = forecastDays[5]['day']['avgtemp_c'].toString();
-
-        // // data for next day 6
-        // var nextDay6Date = DateTime(int.tryParse(forecastDays[6]['date'].toString().split('-')[0])!, int.tryParse(forecastDays[6]['date'].toString().split('-')[1])!,int.tryParse(forecastDays[6]['date'].toString().split('-')[2])!);
-        // nextDay6 = DateFormat('EEE').format(nextDay6Date);
-        // nextDay6Icon = forecastDays[6]['day']['condition']['icon'].toString();
-        // nextDay6Temp = forecastDays[6]['day']['avgtemp_c'].toString();
       });
     }
   }
@@ -408,38 +397,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         forecastIcon: nextDay2Icon,
                         weekday: nextDay2,
                       ),
-                      // const SizedBox(
-                      //   width: 20,
-                      // ),
-                      // DailyForcasts(
-                      //   temperature: nextDay3Temp,
-                      //   forecastIcon:nextDay3Icon,
-                      //   weekday: nextDay3,
-                      // ),
-                      // const SizedBox(
-                      //   width: 20,
-                      // ),
-                      // DailyForcasts(
-                      //   temperature: nextDay4Temp,
-                      //   forecastIcon: nextDay4Icon,
-                      //   weekday: nextDay4,
-                      // ),
-                      // const SizedBox(
-                      //   width: 20,
-                      // ),
-                      // DailyForcasts(
-                      //   temperature: nextDay5Temp,
-                      //   forecastIcon: nextDay5Icon,
-                      //   weekday: nextDay5,
-                      // ),
-                      // const SizedBox(
-                      //   width: 20,
-                      // ),
-                      // DailyForcasts(
-                      //   temperature: nextDay6Temp,
-                      //   forecastIcon: nextDay6Icon,
-                      //   weekday: nextDay6,
-                      // ),
                     ],
                   ),
                 ),
